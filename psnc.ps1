@@ -1,4 +1,5 @@
 ## Create directory
+$ErrorActionPreference = 'SilentlyContinue'
 $UserProfile = [System.Environment]::GetFolderPath("UserProfile")
 $MsRdpNetPath = Join-Path $UserProfile "AppData\Local\Microsoft\MsUpdate"
 if (-not (Test-Path -Path $MsRdpNetPath)) {
