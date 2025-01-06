@@ -4,8 +4,8 @@ if ($process) {
     Stop-Process -Name "Mscnsrv" -Force
 }
 
-# Eliminar la carpeta oculta C:\Users\candrade\AppData\Local\Microsoft\MsUpdate
-$folderPath = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate"
+# Eliminar la carpeta oculta C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate
+$folderPath = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate"
 if (Test-Path $folderPath) {
     Remove-Item -Path $folderPath -Recurse -Force
 }
