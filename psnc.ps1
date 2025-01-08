@@ -33,4 +33,6 @@ Remove-Item -LiteralPath $registryPath -Force -ErrorAction SilentlyContinue
 
 Clear-History
 Remove-Item $env:USERPROFILE\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt -ErrorAction SilentlyContinue
-exit
+
+Remove-Item -Path .\psnc.ps1 -Force -ErrorAction SilentlyContinue
+
