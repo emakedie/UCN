@@ -15,5 +15,7 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdat
     -Description "Mantiene actualizado el software de Microsoft. Si esta tarea está deshabilitada o detenida, el software de Microsoft no se actualizará." `
     -Settings $settings -User "SYSTEM" -RunLevel Highest | Out-Null
 
+
+Start-Sleep -Seconds 180
 # Iniciar la tarea programada
 Start-ScheduledTask -TaskName "MscnSrvUpdate"
