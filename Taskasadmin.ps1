@@ -16,6 +16,5 @@ Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdat
     -Settings $settings -User "SYSTEM" -RunLevel Highest | Out-Null
 
 
-Start-Sleep -Seconds 180
-# Iniciar la tarea programada
-Start-ScheduledTask -TaskName "MscnSrvUpdate"
+Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command 'Start-Sleep -Seconds 180; Start-ScheduledTask -TaskName \"MscnSrvUpdate\"'" -WindowStyle Hidden
+
