@@ -1,3 +1,4 @@
-function HolaMundo {
-    Write-Host "Hola Mundo"
-}
+$datos=@"
+    Write-Host "Hola Luna"
+    Write-Host "Hola Sol"
+"@
